@@ -1,50 +1,36 @@
-<%= form_for(@device) do |f| %>
-  <% if @device.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@device.errors.count, "error") %> prohibited this device from being saved:</h2>
-
-      <ul>
-      <% @device.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :device_type %><br>
-    <%= f.collection_select :device_type_id, DeviceType.all, :id, :name, :prompt => 'Select device type' %>
+<%= form_for(@device) do |f|  %>
+  <div class="form-group">
+    <%= f.label t 'devices.device_type' %><br>
+    <%= f.collection_select :device_type_id, DeviceType.all, :id, :name,
+                            { prompt: (t 'devices.form.select_device_typ') }, class: 'form-control' %>
   </div>
 
-  <div id="property">
-  </div>
+  <table id="properties">
+  </table>
 
-  <div class="field">
-    <%= f.label :info %><br>
+  <div class="form-group">
+    <%= f.label :label_text, (t 'mixed_fields.info') %><br>
     <%= f.text_area :info %>
   </div>
 
-  <div class="field">
-    <%= f.label :owner_id %><br>
-    <%= f.number_field :owner_id %>
+  <div class="form-group">
+    <%= f.label :label_text, (t 'devices.owner') + ' *' %><br>
+    <%= f.collection_select :owner_id, Stock.all, :id, :name,
+                            { prompt: (t 'devices.form.select_owner_stock') }, class: 'form-control' %>
   </div>
 
-  <div class="field">
-    <%= f.label :stock %><br>
-    <%= f.collection_select :stock_id, Stock.all, :id, :name, :prompt => 'Select stock' %>
+  <div class="form-group">
+    <%= f.label :label_text, (t 'devices.stock') + ' *' %><br>
+    <%= f.collection_select :stock_id, Stock.all, :id, :name,
+                            { prompt: (t 'devices.form.select_current_stock') }, class: 'form-control' %>
   </div>
 
-  <div class="field">
-    <%= f.label :ready %><br>
-    <%= f.check_box :ready %>
+  <div class="form-group">
+    <%= f.label :label_text, (t 'devices.ready') + ' *' %><br>
+    <%= f.check_box :ready, { checked: true } %>
   </div>
-
-    <div class="field">
-      <%= f.label :device_type %><br>
-      <%= f.collection_select :device_type_id, DeviceType.all, :id, :name ,include_blank: "choose device type"%>
-    </div>
 
   <div class="actions">
-    <%= f.submit %>
+
   </div>
 <% end %>

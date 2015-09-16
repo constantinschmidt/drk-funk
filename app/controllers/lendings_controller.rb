@@ -1,5 +1,10 @@
 class LendingsController < ApplicationController
-  before_action :set_lending, only: [:show, :edit, :update, :destroy]
+  before_action :set_lending, only: [:show, :edit, :update, :destroy, :return]
+  before_action :set_devices, only: [:new, :create]
+  # Global list of devices that were already selected to be borrowed in this session
+  # Currently disabled remainder of first try of multiple-device-lending
+  # @@global_list = []
+
 
   # GET /lendings
   # GET /lendings.json
@@ -15,26 +20,66 @@ class LendingsController < ApplicationController
   # GET /lendings/new
   def new
     @lending = Lending.new
+    @quick_usr = {}
   end
 
   # GET /lendings/1/edit
   def edit
   end
 
+
   # POST /lendings
   # POST /lendings.json
   def create
     @lending = Lending.new(lending_params)
+    @device_list = params[:deviceids].delete(' ').split(',')
+    @errors = []
+    @quick_usr = {}
 
-    respond_to do |format|
-      if @lending.save
-        format.html { redirect_to @lending, notice: 'Lending was successfully created.' }
-        format.json { render :show, status: :created, location: @lending }
+    # handle quick-generation of user
+    if params[:commit].eql?("Quick User")
+      if quick_user_generation
+        return
+      end
+
+      #submission of entire lending
+    else
+      #artificially recreate device can't be blank error
+      if @device_list.empty?
+        @lending.save
+        @errors << @lending.errors
+        #try to create and save lendings
       else
-        format.html { render :new }
-        format.json { render json: @lending.errors, status: :unprocessable_entity }
+        @device_list.each do |d|
+          tmp_params = lending_params
+          tmp_params[:device_id] = d
+          @lending = Lending.new(tmp_params)
+          if @lending.save
+            @device_list.delete(d)
+          else
+            @errors.push(@lending.errors)
+          end
+        end
       end
     end
+
+    # handles either a failed user-generation or the creation of the actual lending
+    respond_to do |format|
+      if @errors.empty?
+        format.html { redirect_to '/lendings', notice: 'Lendings were successfully created.' }
+        format.json { render :show, status: :created, location: @lending }
+      else
+        errors_to_flash = []
+        @errors.each do |e|
+          errors_to_flash << ((e.values).join("<br/>").html_safe)
+        end
+        flash.now[:error] = errors_to_flash.join("<br/>").html_safe
+        set_selected_devices
+        format.html { render :new }
+        format.json { render json: @errors, status: :unprocessable_entity }
+      end
+    end
+
   end
 
   # PATCH/PUT /lendings/1
@@ -61,24 +106,58 @@ class LendingsController < ApplicationController
     end
   end
 
-  #def loan
-  #  @amount = Hash.new
-  #
-  #  @amount.each do |loan|
-  #    loan.params[0] = :receive
-  #    loan.params[3] = :user_id
-  #    loan.create
-  #  end
-  #end
+  # GET lendings/1/return
+  def return
+  end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_lending
-      @lending = Lending.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_lending
+    @lending = Lending.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def lending_params
-      params.require(:lending).permit(:receive, :lending_info, :receive_info, :user_id, :device_id)
+  # Set all devices for later use in device-selector-coffeescript
+  def set_devices
+    #check for set stock
+    if @current_user.stock.nil?
+      @devices = Device.all.eager_load(:stock, :device_type)
+    else
+      @devices = Device.where(stock_id: @current_user.stock_id).find_each
     end
+    devmap = {}
+    @devices.each do |dev|
+      if dev.available?
+        devmap[dev.id] = {:type => dev.device_type.name, :owner => Unit.find_by_id(Stock.find_by_id(dev.owner_id).id).name, :stock => dev.stock.name}
+      end
+    end
+    gon.devices = devmap
+  end
+
+  # Set selected devices for later use in device-selector-coffeescript
+  def set_selected_devices
+    gon.selected_devices = @device_list
+  end
+
+  # Try to generate a new user from data in params, return true if successful
+  def quick_user_generation
+    @quick_usr[:prename] = params[:user_prename]
+    @quick_usr[:lastname] = params[:user_lastname]
+    @quick_usr[:unit_id] = params[:user_unit]
+    @quick_usr[:info] = params[:user_info]
+    user = User.new(@quick_usr)
+    if user.save
+      @lending.user_id = user.id
+      set_selected_devices
+      render :new
+      return true
+    else
+      @errors.push(user.errors)
+      return false
+    end
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def lending_params
+    params.require(:lending).permit(:receive, :lending_info, :receive_info, :user_id, :device_id, :lender_id, :receiver_id)
+  end
 end

@@ -4,17 +4,23 @@ class ValuesController < ApplicationController
   # GET /values
   # GET /values.json
   def index
-    @values = Value.all
+   #redirect_to '/starts/'
+   #this reactivates the link to /values
+   @values = Value.all
   end
 
   # GET /values/1
   # GET /values/1.json
   def show
+    #delete the following to reactivate link
+    redirect_to '/starts/'
   end
 
   # GET /values/new
   def new
-    @value = Value.new
+    redirect_to '/starts/'
+    #this reactivates the link to /values/new
+    # @value = Value.new
   end
 
   # GET /values/1/edit
@@ -61,6 +67,29 @@ class ValuesController < ApplicationController
     end
   end
 
+  def ValuesController.insert(prop_val, prop_id, device)
+    if !prop_val.nil?
+      prop_val.each do |key, val|
+        v = Value.new
+        v.property_id = prop_id[key]
+        v.value = prop_val[key]
+        v.device_id = device.id
+        v.save
+      end
+    end
+  end
+
+  def ValuesController.change(prop_val, prop_id, device)
+    if !prop_val.nil?
+      prop_val.each do |key, val|
+        prop = Property.find_by_id(prop_id[key])
+        v = prop.values.find_by_device_id(device.id)
+        v.value = prop_val[key]
+        v.save
+      end
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_value
@@ -69,6 +98,6 @@ class ValuesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def value_params
-      params.require(:value).permit(:value, :property_id)
+      params.require(:value).permit(:value, :property_id, :device_id)
     end
 end

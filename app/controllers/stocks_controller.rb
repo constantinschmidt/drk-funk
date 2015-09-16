@@ -14,11 +14,17 @@ class StocksController < ApplicationController
 
   # GET /stocks/new
   def new
+    if current_user.right.manage_stocks_and_units == false
+      redirect_to '/stocks/'
+      else
     @stock = Stock.new
   end
-
+end
   # GET /stocks/1/edit
   def edit
+    if current_user.right.manage_stocks_and_units == false
+      redirect_to '/stocks/'
+  end
   end
 
   # POST /stocks
@@ -28,13 +34,18 @@ class StocksController < ApplicationController
 
     respond_to do |format|
       if @stock.save
-        format.html { redirect_to @stock, notice: 'Stock was successfully created.' }
+        flash[:success] = (I18n.t "own.success.stock_created").to_s
+        format.html { redirect_to @stock }
         format.json { render :show, status: :created, location: @stock }
+
       else
+        #get all error messages and save it into a string
+        flash.now[:error] = (@stock.errors.values).join("<br/>").html_safe
         format.html { render :new }
         format.json { render json: @stock.errors, status: :unprocessable_entity }
       end
     end
+
   end
 
   # PATCH/PUT /stocks/1
@@ -42,9 +53,12 @@ class StocksController < ApplicationController
   def update
     respond_to do |format|
       if @stock.update(stock_params)
-        format.html { redirect_to @stock, notice: 'Stock was successfully updated.' }
+        flash[:success] = (I18n.t "own.success.stock_updated").to_s
+        format.html { redirect_to @stock }
         format.json { render :show, status: :ok, location: @stock }
       else
+        #get all error messages and save it into a string
+        flash.now[:error] = (@stock.errors.values).join("<br/>").html_safe
         format.html { render :edit }
         format.json { render json: @stock.errors, status: :unprocessable_entity }
       end
@@ -54,9 +68,11 @@ class StocksController < ApplicationController
   # DELETE /stocks/1
   # DELETE /stocks/1.json
   def destroy
+
     @stock.destroy
     respond_to do |format|
-      format.html { redirect_to stocks_url, notice: 'Stock was successfully destroyed.' }
+      flash[:success] = (I18n.t "own.success.stock_destroyed").to_s
+      format.html { redirect_to @stock }
       format.json { head :no_content }
     end
   end
@@ -69,6 +85,6 @@ class StocksController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def stock_params
-      params.require(:stock).permit(:name, :info, :unit_id)
+      params.require(:stock).permit(:name, :info, :unit_id, :city, :street)
     end
 end

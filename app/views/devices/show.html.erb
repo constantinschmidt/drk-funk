@@ -1,35 +1,36 @@
-<p id="notice"><%= notice %></p>
+<p id='notice'><%= notice %></p>
 
 <p>
-  <strong>Ready:</strong>
-  <%= @device.ready %>
+  <strong><%= (t 'devices.device_type') + ':'%></strong>
+  <% unless @device.device_type.nil?  %>
+      <%= @device.device_type.name %>
+  <% end %>
 </p>
 
 <p>
-  <strong>Info:</strong>
+  <strong><%= (t 'mixed_fields.info') + ':'%></strong>
   <%= @device.info %>
 </p>
 
 <p>
-  <strong>Owner:</strong>
-  <%= @device.owner_id %>
+  <strong><%= (t 'devices.owner') + ':'%></strong>
+  <% unless (tmp = Stock.find_by_id(@device.owner_id)).nil?  %>
+  <%= tmp.name %>
+  <% end %>
 </p>
 
 <p>
-  <strong>Device type</strong>
-  <%= @device.device_type %>
+  <strong><%= (t 'devices.stock') + ':'%></strong>
+  <% unless @device.stock.nil?  %>
+      <%= @device.stock.name %>
+  <% end %>
 </p>
 
 <p>
-  <strong>Stock</strong>
-  <%= @device.stock %>
+<strong><%= (t 'devices.ready') + ':' %></strong>
+<%= @device.ready %>
 </p>
 
-<p>
-  <strong>devicetype</strong>
-  <%= @device.device_type %>
-</p>
-
-
-<%= link_to 'Edit', edit_device_path(@device) %> |
-<%= link_to 'Back', devices_path %>
+    <a href="/devices/"><button type="button" class = "btn btn-primary" ><%= t 'buttons.back'%></button></a>
+    <%if current_user.right.manage_devices==true%><%= link_to (t 'buttons.edit'), edit_device_path(@device), class:'btn btn-warning' %><%end%>
+    <%if current_user.right.manage_devices==true%><%= link_to raw('Barcode <span class="glyphicon glyphicon-barcode"></span>'), "/barcodes?device_id=#{@device.id}", class:'btn btn-primary', :target => "_blank",  :popup => true  %><%end%>

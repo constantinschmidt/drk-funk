@@ -4,21 +4,34 @@ class RightsController < ApplicationController
   # GET /rights
   # GET /rights.json
   def index
-    @rights = Right.all
+    if current_user.right.manage_rights == true
+      redirect_to '/rights/'
+    else
+    redirect_to '/starts/'
+    end
   end
 
   # GET /rights/1
   # GET /rights/1.json
   def show
+    if current_user.right.manage_rights == false
+      redirect_to '/starts/'
+    end
   end
 
   # GET /rights/new
   def new
+    if current_user.right.manage_rights == false
+      redirect_to '/starts/'
+    else
     @right = Right.new
   end
-
+end
   # GET /rights/1/edit
   def edit
+    if current_user.right.manage_rights == false
+      redirect_to '/starts/'
+      end
   end
 
   # POST /rights
@@ -42,7 +55,8 @@ class RightsController < ApplicationController
   def update
     respond_to do |format|
       if @right.update(right_params)
-        format.html { redirect_to (request.env["HTTP_REFERER"]) , notice: 'Right was successfully updated.' }
+        flash[:success] = (I18n.t "own.success.right_updated").to_s
+        format.html { redirect_to (request.env["HTTP_REFERER"]) }
         format.json { render :show, status: :ok, location: @right }
       else
         format.html { render :edit }
@@ -69,6 +83,6 @@ class RightsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def right_params
-      params.require(:right).permit(:manage_rights, :manage_users, :manage_devices, :manage_device_types, :manage_stocks_and_units, :manage_operations, )
+      params.require(:right).permit(:manage_rights, :manage_users, :manage_devices, :manage_device_types, :manage_stocks_and_units, :manage_operations, :manage_boss,)
     end
 end

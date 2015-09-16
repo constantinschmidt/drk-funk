@@ -1,48 +1,32 @@
 <%= form_for(@operation) do |f| %>
-    <% if @operation.errors.any? %>
-        <div id="error_explanation">
-          <h2><%= pluralize(@operation.errors.count, "error") %> prohibited this operation from being saved:</h2>
-
-          <ul>
-            <% @operation.errors.full_messages.each do |message| %>
-                <li><%= message %></li>
-            <% end %>
-          </ul>
-        </div>
-    <% end %>
-
-
     <table>
-
       <tr>
         <td>
-          <div class="field">
-            <%= f.label :operation_type %><br>
+          <div class="form-group">
+            <%= f.label :label_text, (t "operations.operation_type") + " *" %><br>
             <%= f.text_field :operation_type %>
           </div>
         </td>
 
         <td>
-          <div class="field">
-            <%= f.label 'Operation Number Dispatch' %><br>
+          <div class="form-group">
+            <%= f.label :label_text, (t "operations.operation_dispatch_number") %><br>
             <%= f.text_field :number %>
           </div>
         </td>
-
-
       </tr>
 
       <tr>
         <td>
-          <div class="field">
-            <%= f.label :location %><br>
+          <div class="form-group">
+            <%= f.label :label_text, (t "mixed_fields.location") + " *" %><br>
             <%= f.text_field :location%>
           </div>
         </td>
         <td>
-          <div class="field">
-            <%= f.label :stock %><br>
-            <%= f.collection_select :id, Stock.all, :id, :name, include_blank:'choose stock'%>
+          <div class="form-group">
+            <%= f.label :label_text, (t "mixed_fields.stock") %><br>
+            <%= f.collection_select(:stock_ids, Stock.all, :id, :name, {:prompt => ""}, {:multiple => true}) %>
           </div>
         </td>
       </tr>
@@ -50,21 +34,23 @@
 
       <tr>
         <td colspan="2">
-          <div class="field">
-            <%= f.label :info %><br>
+          <div class="form-group">
+            <%= f.label :label_text, (t "mixed_fields.info") %><br>
             <%= f.text_area :info, :rows => 3, :cols => 41 %>
           </div>
         </td>
       </tr>
 
-      <div class="field">
-        <%= f.label :user %><br>
-        <%= f.collection_select :user_id, User.all, :id, :prename, include_blank:'choose user'%>
+      <div class="form-group">
+        <%= f.label :label_text, (t "operations.user") + " *" %> <br>
+        <%= f.collection_select :user_id, User.where('users.username IS NOT NULL'), :id, :username, { prompt: (t 'operations.form.select_user') }, class: "form-control", include_blank:'choose user'%>
+
       </div>
 
     </table>
 
     <div class="actions">
-      <%= f.submit %>
+
+
     </div>
 <% end %>

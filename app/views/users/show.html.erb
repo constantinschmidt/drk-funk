@@ -2,74 +2,50 @@
 
 <table class="userCreation" width=300 height=100>
   <tr>
-    <td>
       <p>
-        <strong>Username:</strong><br>
+        <strong><%= (t "mixed_fields.username") + ": " %></strong>
         <%= @user.username %>
       </p>
-    </td>
-    <td>
-      <p>
-        <strong>Password:</strong><br>
-        <%= @user.password %>
-      </p>
-    </td>
+
   </tr>
 
   <tr>
-    <td>
       <p>
-        <strong>Prename:</strong><br>
+        <strong><%= (t "mixed_fields.prename") + ": " %></strong>
         <%= @user.prename %>
       </p>
-    </td>
 
-    <td>
       <p>
-        <strong>Lastname:</strong><br>
+        <strong><%= (t "mixed_fields.lastname") + ": " %></strong>
         <%= @user.lastname %>
       </p>
-    </td>
   </tr>
 
   <tr>
-    <td>
       <p>
-        <strong>Email:</strong><br>
+        <strong><%= (t "mixed_fields.email") + ": " %></strong>
         <%= @user.email %>
       </p>
-    </td>
-    <td>
+
       <p>
-        <strong>Mobile number:</strong><br>
+        <strong><%= (t "mixed_fields.mobile_number") + ": " %></strong>
         <%= @user.mobile_number %>
       </p>
-    </td>
   </tr>
 
   <tr>
-    <td>
       <p>
-        <strong>Info:</strong><br>
+        <strong><%= (t "mixed_fields.show.info") + ": " %></strong>
         <%= @user.info %>
       </p>
-    </td>
   </tr>
   <tr>
-    <td>
       <p>
-        <strong>Active:</strong><br>
-        <%= @user.active %>
+        <strong><%= (t "mixed_fields.show.unit") + ": " %></strong>
+        <% unless @user.unit.nil?%>
+            <%= @user.unit.name %>
+        <%end%>
       </p>
-    </td>
-
-
-    <td>
-      <p>
-        <strong>Unit</strong><br>
-        <%= @user.unit %>
-      </p>
-    </td>
 
   </tr>
 
@@ -77,5 +53,6 @@
 </table>
 
 
-<%= link_to 'Edit', edit_user_path(@user) %> |
-<%= link_to 'Back', users_path %>
+
+<a href="/users/"><button type="button" class = "btn btn-primary" >Back</button></a>
+<%if current_user.right.manage_users==true%><%= link_to 'Edit', edit_user_path(@user), class:'btn btn-warning' %><%end%>

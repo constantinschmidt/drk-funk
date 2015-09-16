@@ -3,6 +3,13 @@ ruby "2.2.2"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails'
+
+gem 'bootstrap-switch-rails'
+gem 'flag-icon-sass'
+
+gem 'mail_form'
+gem 'simple_form'
+
 # Use sqlite3 as the database for Active Record
 gem 'pg'
 # Use SCSS for stylesheets
@@ -20,7 +27,9 @@ gem 'chunky_png'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
-# gem 'turbolinks'
+
+#gem 'turbolinks'
+
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
@@ -35,11 +44,20 @@ gem 'dotenv-rails'
 gem 'rails_12factor', group: :production
 
 gem 'puma'
-
+gem 'gon'
 gem 'travis'
 gem 'bootstrap-sass', '~> 3.2.0'
 gem 'autoprefixer-rails'
 gem 'rack-mini-profiler', require: false
+gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
+gem 'bootstrap3-datetimepicker-rails'
+gem 'momentjs-rails'
+
+
+gem 'rufus-scheduler'
+
+
+gem 'whenever', require: false
 
 # Use ActiveModel has_secure_password
  gem 'bcrypt', '~> 3.1.7'
@@ -58,6 +76,6 @@ group :development, :test do
   gem 'web-console', '~> 2.0'
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring'
+  gem 'spring', '~> 1.4'
 end
 
