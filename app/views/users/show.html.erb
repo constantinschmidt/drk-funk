@@ -1,44 +1,81 @@
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Username:</strong>
-  <%= @user.username %>
-</p>
+<table class="userCreation" width=300 height=100>
+  <tr>
+    <td>
+      <p>
+        <strong>Username:</strong><br>
+        <%= @user.username %>
+      </p>
+    </td>
+    <td>
+      <p>
+        <strong>Password:</strong><br>
+        <%= @user.password %>
+      </p>
+    </td>
+  </tr>
 
-<p>
-  <strong>Password:</strong>
-  <%= @user.password %>
-</p>
+  <tr>
+    <td>
+      <p>
+        <strong>Prename:</strong><br>
+        <%= @user.prename %>
+      </p>
+    </td>
 
-<p>
-  <strong>Active:</strong>
-  <%= @user.active %>
-</p>
+    <td>
+      <p>
+        <strong>Lastname:</strong><br>
+        <%= @user.lastname %>
+      </p>
+    </td>
+  </tr>
 
-<p>
-  <strong>Email:</strong>
-  <%= @user.email %>
-</p>
+  <tr>
+    <td>
+      <p>
+        <strong>Email:</strong><br>
+        <%= @user.email %>
+      </p>
+    </td>
+    <td>
+      <p>
+        <strong>Mobile number:</strong><br>
+        <%= @user.mobile_number %>
+      </p>
+    </td>
+  </tr>
 
-<p>
-  <strong>Prename:</strong>
-  <%= @user.prename %>
-</p>
+  <tr>
+    <td>
+      <p>
+        <strong>Info:</strong><br>
+        <%= @user.info %>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p>
+        <strong>Active:</strong><br>
+        <%= @user.active %>
+      </p>
+    </td>
 
-<p>
-  <strong>Lastname:</strong>
-  <%= @user.lastname %>
-</p>
 
-<p>
-  <strong>Mobile number:</strong>
-  <%= @user.mobile_number %>
-</p>
+    <td>
+      <p>
+        <strong>Unit</strong><br>
+        <%= @user.unit %>
+      </p>
+    </td>
 
-<p>
-  <strong>Info:</strong>
-  <%= @user.info %>
-</p>
+  </tr>
+
+
+</table>
+
 
 <%= link_to 'Edit', edit_user_path(@user) %> |
 <%= link_to 'Back', users_path %>

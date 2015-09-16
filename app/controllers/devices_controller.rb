@@ -4,7 +4,7 @@ class DevicesController < ApplicationController
   # GET /devices
   # GET /devices.json
   def index
-    @devices = Device.all
+    @devices = Device.all.eager_load(:stock, :device_type)
   end
 
   # GET /devices/1
@@ -69,6 +69,6 @@ class DevicesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def device_params
-      params.require(:device).permit(:ready, :info, :owner_id)
+      params.require(:device).permit(:ready, :info, :owner_id, :value_id, :stock_id, :device_type_id)
     end
 end
